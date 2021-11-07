@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 
+
+// Buscar todas
 router.get('/', async (req, res) => { 
     try {
       let response = await db.query('SELECT * FROM tbubs');
@@ -11,8 +13,19 @@ router.get('/', async (req, res) => {
    }
 });
 
-router.post('/', async (req, res) => { 
+// Buscar por ID
+router.get('/:id', async (req, res) => { 
+  const id =  req.params.id;
+  try {
+    let response = await db.query('SELECT * FROM tbubs WHERE id = ?',[id]);
+    res.json(response[0]);
+  } catch (error) {
+      res.json({error: true, log: error});
+ }
+});
 
+// Criar
+router.post('/', async (req, res) => { 
   let datas = {
       "descricao": req.body.descricao,
       "Lougradouro": req.body.Lougradouro,
@@ -30,6 +43,7 @@ router.post('/', async (req, res) => {
    }
 });
 
+// Atualizar
 router.put('/:id', async (req, res) => { 
     const id =  req.params.id;
     let datas = {
@@ -49,6 +63,17 @@ router.put('/:id', async (req, res) => {
      }
 });
 
+// Deletar
+router.delete('/:id', async (req, res) => { 
+  const id =  req.params.id;
+  try {
+    let response = await db.query('DELETE FROM tbubs WHERE id = ?',[id]);
+    res.json(response[0]);
+  } catch (error) {
+      res.json({error: true, log: error});
+ }
+});
+//falar com jan para ver se ele impediu de deletar
 
 module.exports = router
 
